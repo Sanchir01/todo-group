@@ -1,0 +1,46 @@
+{
+	"todos": [
+		{
+			"id": 1,
+			"title": "Create a To-Do App",
+			"completed": false,
+			"userId": 1
+		},
+		{
+			"id": 2,
+			"title": "add react query",
+			"completed": false,
+			"userId": 1
+		},
+		{
+			"id": 3,
+			"title": "add server",
+			"completed": false,
+			"userId": 1
+		},
+		{
+			"id": 4,
+			"title": "add redux",
+			"completed": false,
+			"userId": 1
+		},
+		{
+			"id": 5,
+			"title": "create components",
+			"completed": false,
+			"userId": 1
+		},
+		{
+			"id": 6,
+			"title": "test",
+			"completed": false,
+			"userId": 1
+		}
+	],
+	"users": [
+		{
+			"id": 1,
+			"name": "Sanchir"
+		}
+	]
+}
