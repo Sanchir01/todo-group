@@ -40,7 +40,8 @@
 	"users": [
 		{
 			"id": 1,
-			"name": "Sanchir"
+			"name": "Sanchir",
+			"password": "test01"
 		}
 	]
 }
