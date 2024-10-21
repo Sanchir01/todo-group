@@ -1,7 +1,13 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { todosSlice } from './Slices/todos'
+
+const rootReducer = combineReducers({
+	todos: todosSlice.reducer
+})
+
 
 export const store = configureStore({
-	reducer: {},
+	reducer: rootReducer,
 });
 
 export type RootState = ReturnType<typeof store.getState>;
