@@ -1,0 +1,14 @@
+import { createSlice } from '@reduxjs/toolkit'
+import { ITodo } from '~/shared/types/todo.inteface.ts'
+export interface TodosState {
+	items: ITodo[];
+	status: 'idle' | 'loading' | 'succeeded' | 'failed';
+	error: string | null;
+}
+export const initialState = { todos: [], isLoading: false, error: null }
+
+export const todosSlice = createSlice({
+	initialState,
+	name: 'todos',
+	reducers: {}
+})

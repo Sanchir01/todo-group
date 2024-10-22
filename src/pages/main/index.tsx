@@ -1,34 +1,106 @@
-import Button from '@mui/material/Button'
-import { useState } from 'react'
-import reactLogo from '~/shared/assets/react.svg'
-import viteLogo from '~/shared/assets/vite.svg'
-function App() {
-  const [count, setCount] = useState(0)
+import {
+	selectAllTodos,
+	selectTodosError,
+	selectTodosStatus
+} from '~/app/store/todos/selectors.ts'
+import { useEffect, useState } from 'react'
+import {
+	addTodo,
+	AllTodos,
+	deleteTodo,
+	updateTodo
+} from '~/app/store/todos/asyncActions.ts'
+import { useAppDispatch, useRedux } from '~/shared/hooks/useRedux.ts'
 
-  return (
-			<>
+function Main() {
+	const dispatch = useAppDispatch()
+	const todos = useRedux(selectAllTodos)
+	const status = useRedux(selectTodosStatus)
+	const error = useRedux(selectTodosError)
+	const [newTodo, setNewTodo] = useState('')
+	const [editTodo, setEditTodo] = useState<{
+		id: number
+		title: string
+	} | null>(null)
+	// Загружаем задачи при монтировании компонента
+	useEffect(() => {
+		if (status === 'idle') {
+			dispatch(AllTodos())
+		}
+	}, [dispatch, status])
+	// Функция для добавления новой задачи
+	const handleAddTodo = () => {
+		if (newTodo.trim()) {
+			dispatch(addTodo({ title: newTodo, completed: false, userId: 1 }))
+			setNewTodo('')
+		}
+	}
+	// Функция для обновления задачи
+	const handleUpdateTodo = () => {
+		if (editTodo && editTodo.title.trim()) {
+			dispatch(
+				updateTodo({
+					id: editTodo.id,
+					title: editTodo.title,
+					completed: false,
+					userId: 1
+				})
+			)
+			setEditTodo(null)
+		}
+	}
+	// Функция для удаления задачи
+	const handleDeleteTodo = (id: number) => {
+		dispatch(deleteTodo({ id }))
+	}
+	return (
+		<div>
+			<h1>Todo List</h1>
+			{status === 'loading' && <p>Loading...</p>}
+			{status === 'failed' && <p>Error: {error}</p>}
+			{status === 'succeeded' && (
+				<ul>
+					{todos.map(todo => (
+						<li key={todo.id}>
+							{editTodo && editTodo.id === todo.id ? (
+								<input
+									type='text'
+									value={editTodo.title}
+									onChange={e =>
+										setEditTodo({ ...editTodo, title: e.target.value })
+									}
+								/>
+							) : (
+								<span>
+									{todo.title} -{' '}
+									{todo.completed ? 'Completed' : 'Not Completed'}
+								</span>
+							)}
+							<button
+								onClick={() => setEditTodo({ id: todo.id, title: todo.title })}
+							>
+								Edit
+							</button>
+							<button onClick={() => handleDeleteTodo(todo.id)}>Delete</button>
+						</li>
+					))}
+				</ul>
+			)}
+			<input
+				type='text'
+				value={newTodo}
+				onChange={e => setNewTodo(e.target.value)}
+				placeholder='Add a new todo'
+			/>
+			<button onClick={handleAddTodo}>Add Todo</button>
+			{editTodo && (
 				<div>
-					<a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-						<img src={viteLogo} className="logo" alt="Vite logo" />
-					</a>
-					<a href="https://react.dev" target="_blank" rel="noreferrer">
-						<img src={reactLogo} className="logo react" alt="React logo" />
-					</a>
+					<button onClick={handleUpdateTodo}>Update Todo</button>
+					<button onClick={() => setEditTodo(null)}>Cancel</button>
 				</div>
-				<h1>Vite + React</h1>
-				<div className="card">
-					<Button onClick={() => setCount((count) => count + 1)}>
-						count is {count}
-					</Button>
-					<p>
-						Edit <code>src/App.tsx</code> and save to test HMR
-					</p>
-				</div>
-				<p className="read-the-docs">
-					Click on the Vite and React logos to learn more
-				</p>
-			</>
-		);
+			)}
+		</div>
+	)
 }
 
-export default App
+export default Main

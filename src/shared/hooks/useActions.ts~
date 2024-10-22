@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux'
 import * as todoActions from '~/app/store/todos/slice.ts'
 
 const rootActions = {
-	...todoActions.todosSlice.actions
+	...todoActions.todosSlice.reducer
 }
 export const useActions = () => {
 	const dispatch = useDispatch()

@@ -1,0 +1,44 @@
+import { createSlice } from '@reduxjs/toolkit'
+import { ITodo } from '~/shared/types/todo.inteface.ts'
+import { AllTodos, DeleteTodo } from '~/app/store/todos/asyncActions.ts'
+
+export interface TodosState {
+	todos: ITodo[]
+	status: 'idle' | 'loading' | 'succeeded' | 'failed'
+	error: string | null
+}
+
+export const initialState: TodosState = {
+	todos: [],
+	status: 'idle',
+	error: null
+}
+
+export const todosSlice = createSlice({
+	initialState,
+	name: 'todos',
+	reducers: {},
+	extraReducers: builder => {
+		builder.addCase(AllTodos.pending, state => {
+			state.status = 'loading'
+		})
+		builder.addCase(AllTodos.fulfilled, (state, { payload }) => {
+			state.status = 'succeeded'
+			state.todos = payload
+		})
+		builder.addCase(AllTodos.rejected, (state, action) => {
+			state.status = 'failed'
+			state.error = action.error.message || 'Failed to fetch todos'
+		})
+
+		builder.addCase(DeleteTodo.pending, state => {
+			state.status = 'loading'
+		})
+		builder.addCase(DeleteTodo.fulfilled, (state, action) => {
+			state.todos = state.todos.filter(item => item.id !== action.payload)
+		})
+		builder.addCase(DeleteTodo.rejected, state => {
+			state.error = 'Failed to delete todo'
+		})
+	}
+})

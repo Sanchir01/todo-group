@@ -1,18 +1,16 @@
-import axios from "axios";
-import { AuthServiceTokens } from "../utils/tokens";
+import axios from "axios"
 
 export const instance = axios.create({
-	baseURL: import.meta.env.SERVER_URL,
+	baseURL: import.meta.env.VITE_SERVER_URL,
 	headers: {
 		"Content-Type": "application/json",
 	},
-	withCredentials: true,
 });
 
-instance.interceptors.request.use(async (config) => {
-	const token = await AuthServiceTokens.getAccessToken();
-	if (config.headers && token) {
-		config.headers.Authorization = `Bearer ${token}`;
-	}
-	return config;
-});
+// instance.interceptors.request.use(async (config) => {
+// 	const token = await AuthServiceTokens.getAccessToken();
+// 	if (config.headers && token) {
+// 		config.headers.Authorization = `Bearer ${token}`;
+// 	}
+// 	return config;
+// });
