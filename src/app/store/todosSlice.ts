@@ -1,49 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-import { RootState } from './store/store'; 
+import { getAllTodos, getTodoById, createTodo, updateTodoById, deleteTodoById } from '../../shared/api/todoService';
+import { RootState } from './store';
 
-const API_URL = 'http://localhost:3001/todos';
-
-export const fetchTodos = createAsyncThunk('todos/fetchTodos', async () => {
-  const response = await axios.get(API_URL);
-  return response.data;
-});
-
-export const addTodo = createAsyncThunk(
-  'todos/addTodo',
-  async (newTodo: { title: string; completed: boolean; userId: number }) => {
-    const response = await axios.post(API_URL, newTodo, {
-      headers: { 'Content-Type': 'application/json' },
-    });
-    return response.data;
-  }
-);
-
-export const updateTodo = createAsyncThunk(
-  'todos/updateTodo',
-  async (updatedTodo: Todo) => {
-    const response = await axios.put(`${API_URL}/${updatedTodo.id}`, updatedTodo, {
-      headers: { 'Content-Type': 'application/json' },
-    });
-    return response.data;
-  }
-);
-
-export const deleteTodo = createAsyncThunk(
-  'todos/deleteTodo',
-  async (id: number) => {
-    await axios.delete(`${API_URL}/${id}`);
-    return id;
-  }
-);
-
-
-export const fetchTodoById = createAsyncThunk('todos/fetchTodoById', async (id: number) => {
-  const response = await axios.get(`${API_URL}/${id}`);
-  return response.data;
-});
-
-export interface Todo { 
+// Интерфейс задачи (Todo)
+export interface Todo {
   id: number;
   title: string;
   completed: boolean;
@@ -56,11 +16,44 @@ export interface TodosState {
   error: string | null;
 }
 
-const initialState: TodosState = {
+export const initialState: TodosState = {
   items: [],
   status: 'idle',
   error: null,
 };
+
+// CRUD
+export const fetchTodos = createAsyncThunk('todos/fetchTodos', async () => {
+  const response = await getAllTodos();
+  return response.data;
+});
+
+export const fetchTodoById = createAsyncThunk('todos/fetchTodoById', async (id: number) => {
+  const response = await getTodoById(id);
+  return response.data;
+});
+
+export const addTodo = createAsyncThunk(
+  'todos/addTodo',
+  async (newTodo: { title: string; completed: boolean; userId: number }) => {
+    const response = await createTodo(newTodo);
+    return response.data;
+  }
+);
+
+export const updateTodo = createAsyncThunk(
+  'todos/updateTodo',
+  async (updatedTodo: Todo) => {
+    const response = await updateTodoById(updatedTodo);
+    return response.data;
+  }
+);
+
+export const deleteTodo = createAsyncThunk('todos/deleteTodo', async (id: number) => {
+  await deleteTodoById(id);
+  return id;
+});
+
 
 export const todosSlice = createSlice({
   name: 'todos',
@@ -107,7 +100,7 @@ export const todosSlice = createSlice({
   },
 });
 
-export const selectAllTodos = (state: RootState) => state.todos.items;
+// Экспорт селекторов и редьюсера
 export const selectTodosStatus = (state: RootState) => state.todos.status;
 export const selectTodosError = (state: RootState) => state.todos.error;
 export const selectTodoById = (state: RootState, id: number) =>
