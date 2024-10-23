@@ -1,4 +1,4 @@
-import { RootState } from '~/app/store/store.ts'
+import type { RootState } from '~/app/store/store.ts'
 
 export const selectAllTodos = (state: RootState) => state.todos.todos
 export const selectTodosStatus = (state: RootState) => state.todos.status

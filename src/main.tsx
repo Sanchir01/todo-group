@@ -10,6 +10,7 @@ import { RouterProvider } from 'react-router-dom'
 import { router } from './shared/routes/router'
 
 
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Providers>

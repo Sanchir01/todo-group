@@ -1,56 +1,32 @@
 {
   "todos": [
     {
-      "id": "1",
-      "title": "Create a To-Do App",
+      "id": 1,
+      "title": "фывфы",
       "completed": false,
       "userId": 1
     },
     {
-      "id": "2",
-      "title": "add react query",
+      "id": 1,
+      "title": "фывфв",
       "completed": false,
       "userId": 1
     },
     {
-      "id": "3",
-      "title": "add server",
+      "id": 1,
+      "title": "ыфвфыв",
       "completed": false,
       "userId": 1
     },
     {
-      "id": "4",
-      "title": "add redux",
+      "id": 1,
+      "title": "фывыфв",
       "completed": false,
       "userId": 1
     },
     {
-      "id": "5",
-      "title": "create components",
-      "completed": false,
-      "userId": 1
-    },
-    {
-      "id": "6",
-      "title": "test",
-      "completed": false,
-      "userId": 1
-    },
-    {
-      "id": "99de",
-      "title": "dasdd",
-      "completed": false,
-      "userId": 1
-    },
-    {
-      "id": "eb08",
-      "title": "asdasd",
-      "completed": false,
-      "userId": 1
-    },
-    {
-      "id": "fa94",
-      "title": "asdsad",
+      "id": 1,
+      "title": "ыфвфв",
       "completed": false,
       "userId": 1
     }
