@@ -1,5 +1,5 @@
-import {instance} from '../api/instance';
-import { Todo } from '../types/todoTypes';
+import {instance} from '~/shared/api/instance';
+import { Todo } from '~/shared/types/todoTypes';
 
 export const getAllTodos = () => {
   return instance.get('/todos');

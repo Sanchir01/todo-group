@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getAllTodos, getTodoById, createTodo, updateTodoById, deleteTodoById } from '../../shared/api/todoService';
-import { RootState } from './store';
+import { getAllTodos, getTodoById, createTodo, updateTodoById, deleteTodoById } from '~/shared/api/todoService';
+import { RootState } from '~/app/store/store';
 
 // Интерфейс задачи (Todo)
 export interface Todo {
