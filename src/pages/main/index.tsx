@@ -37,7 +37,6 @@ function Main() {
 					title: newTodo,
 					completed: false,
 					userId: 1,
-					id: 1,
 				}),
 			);
 			setNewTodo("");
@@ -68,35 +67,41 @@ function Main() {
 			{status === "failed" && <p>Error: {error}</p>}
 			{status === "succeeded" && (
 				<ul>
-					{todos.map((todo) => (
-						<li key={todo.id}>
-							{editTodo && editTodo.id === todo.id ? (
-								<input
-									type="text"
-									value={editTodo.title}
-									onChange={(e) =>
-										setEditTodo({ ...editTodo, title: e.target.value })
+					{todos.length === 0 ? (
+						<div>список задач пуст</div>
+					) : (
+						todos.map((todo) => (
+							<li key={todo.id}>
+								{editTodo && editTodo.id === todo.id ? (
+									<input
+										type="text"
+										value={editTodo.title}
+										onChange={(e) =>
+											setEditTodo({ ...editTodo, title: e.target.value })
+										}
+									/>
+								) : (
+									<Link to={`/${todo.id}`}>
+										<span>
+											{todo.title} -{" "}
+											{todo.completed ? "Completed" : "Not Completed"}
+										</span>
+									</Link>
+								)}
+								<button
+									type="button"
+									onClick={() =>
+										setEditTodo({ id: todo.id, title: todo.title })
 									}
-								/>
-							) : (
-								<Link to={`/${todo.id}`}>
-									<span>
-										{todo.title} -{" "}
-										{todo.completed ? "Completed" : "Not Completed"}
-									</span>
-								</Link>
-							)}
-							<button
-								type="button"
-								onClick={() => setEditTodo({ id: todo.id, title: todo.title })}
-							>
-								Edit
-							</button>
-							<button type="button" onClick={() => handleDeleteTodo(todo.id)}>
-								Delete
-							</button>
-						</li>
-					))}
+								>
+									Edit
+								</button>
+								<button type="button" onClick={() => handleDeleteTodo(todo.id)}>
+									Delete
+								</button>
+							</li>
+						))
+					)}
 				</ul>
 			)}
 			<input

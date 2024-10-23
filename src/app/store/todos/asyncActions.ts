@@ -26,10 +26,11 @@ export const updateTodoThunk = createAsyncThunk(
 	},
 );
 
-export const createTodoThunk = createAsyncThunk<ITodo, ITodo>(
+export const createTodoThunk = createAsyncThunk(
 	"todos/createTodo",
 	async (todo: Omit<ITodo, "id">) => {
 		const response = await todoService.createTodo(todo);
+		console.log("create response", response);
 		return response;
 	},
 );
