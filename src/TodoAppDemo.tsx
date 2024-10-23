@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllTodos, createTodo, updateTodoById, deleteTodoById } from '~/shared/api/todoService';
-import { AppDispatch } from './app/store/store'; 
-import {  selectTodosStatus, selectTodosError } from '~/app/store/todosSlice';
-import { Todo } from '~/shared/types/todoTypes';
+import { AppDispatch, RootState } from './app/store/store'; 
+import {  selectTodosStatus, selectTodosError, addTodo, fetchTodos, updateTodo, deleteTodo } from '~/app/store/todosSlice';
 
 
 
 
 const TodoAppDemo: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [todos, setTodos] = useState<Todo[]>([]);
+  const todos = useSelector((state: RootState) => state.todos.items);
   const status = useSelector(selectTodosStatus);
   const error = useSelector(selectTodosError);
   const [newTodo, setNewTodo] = useState('');
@@ -18,24 +16,17 @@ const TodoAppDemo: React.FC = () => {
 
   // Загружаем задачи при монтировании компонента
   useEffect(() => {
-    console.log(status);
-    console.log(status)
-
     if (status === 'idle') {
-      getAllTodos().then((response) => {        
-        if (Array.isArray(response.data)) {
-          setTodos(response.data);
-        }      });
+      dispatch(fetchTodos());
     }
-    console.log(status)
+  }, [dispatch, status]);
 
-  }, [status]);
   
   // Функция для добавления новой задачи
   const handleAddTodo = () => {
     if (newTodo.trim()) {
-      createTodo({ title: newTodo, completed: false, userId: 1 }).then((response) => {
-        dispatch({ type: 'todos/addTodo/fulfilled', payload: response.data });
+      dispatch(addTodo({ title: newTodo, completed: false, userId: 1 })).then(() => {
+        dispatch(fetchTodos());
       });
       setNewTodo('');
     }
@@ -44,10 +35,8 @@ const TodoAppDemo: React.FC = () => {
   // Функция для обновления задачи
   const handleUpdateTodo = () => {
     if (editTodo && editTodo.title.trim()) {
-      updateTodoById({ id: editTodo.id, title: editTodo.title, completed: false, userId: 1 }).then((response) => {
-        setTodos((prevTodos) =>
-          prevTodos.map((todo) => (todo.id === response.data.id ? response.data : todo))
-        );      
+      dispatch(updateTodo({ id: editTodo.id, title: editTodo.title, completed: false, userId: 1 })).then(() => {
+        dispatch(fetchTodos());
       });
       setEditTodo(null);
     }
@@ -55,8 +44,8 @@ const TodoAppDemo: React.FC = () => {
 
   // Функция для удаления задачи
   const handleDeleteTodo = (id: number) => {
-    deleteTodoById(id).then(() => {
-      setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
+    dispatch(deleteTodo(id)).then(() => {
+      dispatch(fetchTodos());
     });
   };
 
