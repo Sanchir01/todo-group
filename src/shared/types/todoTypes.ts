@@ -17,3 +17,8 @@ export const initialState: TodosState = {
   status: 'idle',
   error: null,
 };
+
+export type EditTodo = {
+  id: number;
+  title: string;
+}; 

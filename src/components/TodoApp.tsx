@@ -10,17 +10,18 @@ import {
 	deleteTodo,
 	Todo
 } from '~/app/store/todosSlice'
+import { TodoUncompleteListElement } from './TodoUncompleteListElement'
+import { EditTodo } from '~/shared/types/todoTypes'
+import { TodoCompleteListElement } from './TodoCompleteListElement'
 
-const TodoAppDemo: React.FC = () => {
+export const TodoApp: React.FC = () => {
 	const dispatch = useDispatch<AppDispatch>()
 	const todos = useSelector((state: RootState) => state.todos.items)
 	const status = useSelector(selectTodosStatus)
 	const error = useSelector(selectTodosError)
 	const [newTodo, setNewTodo] = useState('')
-	const [editTodo, setEditTodo] = useState<{
-		id: number
-		title: string
-	} | null>(null)
+
+	const [editTodo, setEditTodo] = useState<EditTodo | null>(null)
 
 	// Загружаем задачи при монтировании компонента
 	useEffect(() => {
@@ -79,8 +80,12 @@ const TodoAppDemo: React.FC = () => {
 		})
 	}
 
-  const uncompletedTodos = todos.filter(todo => todo.completed === false);
-  const completedTodos = todos.filter(todo => todo.completed === true);
+	const handleEditTodo = (editetTodo: typeof editTodo) => {
+		setEditTodo(editetTodo)
+	}
+
+	const uncompletedTodos = todos.filter(todo => todo.completed === false)
+	const completedTodos = todos.filter(todo => todo.completed === true)
 
 	return (
 		<div>
@@ -104,53 +109,30 @@ const TodoAppDemo: React.FC = () => {
 				</div>
 			)}
 
-      <h2>Tasks to do - {uncompletedTodos.length}</h2>
+			<h2>Tasks to do - {uncompletedTodos.length}</h2>
 
 			<ul>
-				{uncompletedTodos
-					.map(todo => (
-						<li key={todo.id}>
-							{editTodo && editTodo.id === todo.id ? (
-								<input
-									type='text'
-									value={editTodo.title}
-									onChange={e =>
-										setEditTodo({ ...editTodo, title: e.target.value })
-									}
-								/>
-							) : (
-								<span>
-									{todo.title}
-								</span>
-							)}
-							<button onClick={() => handleCompleteTodo(todo)}>Complete</button>
-							<button
-								onClick={() => setEditTodo({ id: todo.id, title: todo.title })}
-							>
-								Edit
-							</button>
-							<button onClick={() => handleDeleteTodo(todo.id)}>Delete</button>
-						</li>
-					))}
+				{uncompletedTodos.map(todo => (
+					<TodoUncompleteListElement
+						todo={todo}
+						editTodo={editTodo}
+						handleEditTodo={handleEditTodo}
+						handleCompleteTodo={handleCompleteTodo}
+						handleDeleteTodo={handleDeleteTodo}
+					/>
+				))}
 			</ul>
 
-      <h2>Done - {completedTodos.length}</h2>
+			<h2>Done - {completedTodos.length}</h2>
 
 			<ul>
-				{completedTodos
-					.map(todo => (
-						<li key={todo.id}>
-							<span>
-								{todo.title}
-							</span>
-							<button onClick={() => handleCompleteTodo(todo)}>
-								Uncomplete
-							</button>
-						</li>
-					))}
+				{completedTodos.map(todo => (
+					<TodoCompleteListElement
+						todo={todo}
+						handleCompleteTodo={handleCompleteTodo}
+					/>
+				))}
 			</ul>
 		</div>
 	)
 }
-
-export default TodoAppDemo
