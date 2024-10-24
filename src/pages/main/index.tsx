@@ -1,37 +1,57 @@
-import Button from '@mui/material/Button'
-import { useState } from 'react'
-import reactLogo from '~/shared/assets/react.svg'
-import viteLogo from '~/shared/assets/vite.svg'
-import TodoAppDemo from '~/TodoAppDemo'
-function App() {
-  const [count, setCount] = useState(0)
+import type React from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "~/app/store/store";
+import {
+	selectTodosStatus,
+	selectTodosError,
+	fetchTodos,
+} from "~/app/store/todosSlice";
+import TaskInput from "~/components/TaskInput";
+import Task from "~/components/Task";
+import st from "~/shared/styles/main.module.scss";
+const MainPage: React.FC = () => {
+	const dispatch = useDispatch<AppDispatch>();
+	const todos = useSelector((state: RootState) => state.todos.items);
+	const status = useSelector(selectTodosStatus);
+	const error = useSelector(selectTodosError);
 
-  return (
-			<>
-				<div>
-					<a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-						<img src={viteLogo} className="logo" alt="Vite logo" />
-					</a>
-					<a href="https://react.dev" target="_blank" rel="noreferrer">
-						<img src={reactLogo} className="logo react" alt="React logo" />
-					</a>
-				</div>
-				<h1>Vite + React</h1>
-				<div className="card">
-					<Button onClick={() => setCount((count) => count + 1)}>
-						count is {count}
-					</Button>
-					<p>
-						Edit <code>src/App.tsx</code> and save to test HMR
-					</p>
-				</div>
-				<p className="read-the-docs">
-					Click on the Vite and React logos to learn more
-				</p>
-				<TodoAppDemo /> 
+	useEffect(() => {
+		if (status === "idle") {
+			dispatch(fetchTodos());
+		}
+	}, [dispatch, status]);
 
-			</>
-		);
-}
+	if (status === "loading") {
+		return status === "loading" && <p>Loading...</p>;
+	}
+	if (status === "failed") {
+		return status === "failed" && <p>Error: {error}</p>;
+	}
+	return (
+		<div className={st.main}>
+			<TaskInput />
+			<div>
+				{todos.map(
+					(todo) =>
+						todo.completed === false && (
+							<div key={todo.id}>
+								<Task
+									title={todo.title}
+									id={todo.id}
+									userId={todo.userId}
+									completed={todo.completed}
+								/>
+							</div>
+						),
+				)}
+			</div>
+			{todos.map(
+				(todo) =>
+					todo.completed === true && <div key={todo.id}>{todo.title}</div>,
+			)}
+		</div>
+	);
+};
 
-export default App
+export default MainPage;
